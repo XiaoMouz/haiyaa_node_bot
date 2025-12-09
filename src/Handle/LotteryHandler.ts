@@ -1,4 +1,7 @@
-import { IGroupMessageHandler, GroupMessageContext } from './IGroupMessageHandler.js'
+import {
+  IGroupMessageHandler,
+  GroupMessageContext,
+} from './IGroupMessageHandler.js'
 import { BotSettings } from '../Config/BotSettings.js'
 import { LotteryService } from '../Storage/LotteryService.js'
 import { Structs } from 'node-napcat-ts'
@@ -68,7 +71,7 @@ export class LotteryHandler implements IGroupMessageHandler {
         message: [
           Structs.reply(context.messageId),
           Structs.text(`你今天已经抽过了！你的老婆是：`),
-          Structs.at(existingLottery.selectedUin),
+          Structs.text(`@${existingLottery.selectedUin}`),
           Structs.text(remainingText),
           Structs.image(`base64://${base64Avatar}`),
         ],
@@ -116,7 +119,14 @@ export class LotteryHandler implements IGroupMessageHandler {
       message: [
         Structs.reply(context.messageId),
         Structs.text(`恭喜！你今天的老婆是：`),
-        Structs.at(lottery.selectedUin),
+        // Structs.at(lottery.selectedUin),
+        Structs.text(
+          `${
+            memberListResponse.find((m) => m.user_id === lottery.selectedUin)
+              ?.nickname || lottery.selectedUin
+          }`
+        ),
+
         Structs.text(remainingText),
         Structs.image(`base64://${base64Avatar}`),
       ],
@@ -165,7 +175,9 @@ export class LotteryHandler implements IGroupMessageHandler {
     }
 
     // Get new avatar
-    const avatarUrl = `https://q1.qlogo.cn/g?b=qq&nk=${result.lottery!.selectedUin}&s=640`
+    const avatarUrl = `https://q1.qlogo.cn/g?b=qq&nk=${
+      result.lottery!.selectedUin
+    }&s=640`
     const avatarBuffer = await Tool.fetchImageAsync(avatarUrl)
     const base64Avatar = avatarBuffer.toString('base64')
 
@@ -179,14 +191,23 @@ export class LotteryHandler implements IGroupMessageHandler {
       message: [
         Structs.reply(context.messageId),
         Structs.text(`重抽成功！你的新老婆是：`),
-        Structs.at(result.lottery!.selectedUin),
+        // Structs.at(result.lottery!.selectedUin),
+        Structs.text(
+          `${
+            memberListResponse.find(
+              (m) => m.user_id === result.lottery!.selectedUin
+            )?.nickname || result.lottery!.selectedUin
+          }`
+        ),
         Structs.text(remainingText),
         Structs.image(`base64://${base64Avatar}`),
       ],
     })
 
     console.log(
-      `[Lottery] ${context.senderUin} rerolled to ${result.lottery!.selectedUin} in group ${context.groupUin}`
+      `[Lottery] ${context.senderUin} rerolled to ${
+        result.lottery!.selectedUin
+      } in group ${context.groupUin}`
     )
   }
 }

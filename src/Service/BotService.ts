@@ -35,7 +35,7 @@ export class BotService {
           delay: 5000,
         },
       },
-      true
+      process.env.NODE_ENV === 'development'
     )
 
     // Initialize services

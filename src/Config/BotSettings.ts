@@ -32,12 +32,18 @@ export class BotSettings {
   static readonly CheckinDataFilePath = 'Data/checkin_records.json'
 
   // Bilibili live room monitoring
-  static readonly LiveRoomId = parseInt(process.env.BILIBILI_LIVE_ROOM_ID || '22601574')
-  static readonly NotifyFansGroupUin = parseInt(process.env.BILIBILI_NOTIFY_GROUP_UIN || '749823895')
-  static readonly BilibiliPollIntervalMs = parseInt(process.env.BILIBILI_POLL_INTERVAL_MS || '30000')
+  static readonly LiveRoomId = parseInt(
+    process.env.BILIBILI_LIVE_ROOM_ID || '22601574'
+  )
+  static readonly NotifyFansGroupUin = parseInt(
+    process.env.BILIBILI_NOTIFY_GROUP_UIN || '749823895'
+  )
+  static readonly BilibiliPollIntervalMs = parseInt(
+    process.env.BILIBILI_POLL_INTERVAL_MS || '30000'
+  )
 
   // Assets paths
-  static readonly AssetsPath = 'src/Assets'
+  static readonly AssetsPath = process.env.ASSETS_PATH || 'src/Assets'
   static readonly MaoImagePath = `${BotSettings.AssetsPath}/mao.jpg`
 
   // Fortune image paths
@@ -51,5 +57,6 @@ export class BotSettings {
   }
 
   // Private message default response
-  static readonly PrivateMessageDefaultText = '小BOT不是很理解哦，因为还没有做私聊捏'
+  static readonly PrivateMessageDefaultText =
+    '小BOT不是很理解哦，因为还没有做私聊捏'
 }
