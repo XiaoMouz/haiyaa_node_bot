@@ -1,39 +1,59 @@
-import { NCWebsocket, Structs } from 'node-napcat-ts'
+import 'dotenv/config'
+import { BotService } from './Service/BotService.js'
+import { LiveMonitorService } from './Service/LiveMonitorService.js'
 
-const bot = new NCWebsocket(
-  {
-    protocol: 'ws',
-    host: '117.72.37.125',
-    port: 30001,
-    accessToken: '21e89duqd9109',
-    throwPromise: true,
-    reconnection: {
-      enable: true,
-      attempts: 10,
-      delay: 5000,
-    },
-  },
-  true
-)
+async function main() {
+  try {
+    console.log('='.repeat(50))
+    console.log('Haiyaa Bot Starting...')
+    console.log('='.repeat(50))
 
-bot.on('message.private.friend', async (ctx) => {
-  console.log('Received private message from friend:', ctx.message)
-  await bot.send_private_msg({
-    user_id: ctx.sender.user_id,
-    message: [
-      Structs.text(
-        'Hello! I received your message: ' +
-          ctx.message
-            .map((m) =>
-              'text' in m.data && m.data.text ? m.data.text.toString() : ''
-            )
-            .join('')
-      ),
-      Structs.reply(ctx.message_id),
-    ],
-  })
-})
+    // Get configuration from environment variables
+    const config = {
+      protocol: (process.env.BOT_PROTOCOL as 'ws' | 'wss') || 'ws',
+      host: process.env.BOT_HOST || '127.0.0.1',
+      port: parseInt(process.env.BOT_PORT || '3001'),
+      accessToken: process.env.BOT_ACCESS_TOKEN,
+    }
 
-await bot.connect().then(() => {
-  console.log('Connected to the server!')
-})
+    console.log('[Main] Bot configuration:')
+    console.log(`  Protocol: ${config.protocol}`)
+    console.log(`  Host: ${config.host}`)
+    console.log(`  Port: ${config.port}`)
+    console.log(`  Access Token: ${config.accessToken ? '***' : 'Not set'}`)
+
+    // Initialize bot service
+    const botService = new BotService(config)
+    await botService.initialize()
+
+    // Connect to server
+    await botService.connect()
+
+    // Initialize and start live monitor
+    const liveMonitor = new LiveMonitorService(botService.getBot())
+    await liveMonitor.start()
+
+    console.log('='.repeat(50))
+    console.log('Bot is now running!')
+    console.log('Press Ctrl+C to stop')
+    console.log('='.repeat(50))
+
+    // Keep the process alive
+    process.on('SIGINT', () => {
+      console.log('\n[Main] Shutting down...')
+      liveMonitor.stop()
+      process.exit(0)
+    })
+
+    process.on('SIGTERM', () => {
+      console.log('\n[Main] Shutting down...')
+      liveMonitor.stop()
+      process.exit(0)
+    })
+  } catch (error) {
+    console.error('[Main] Fatal error:', error)
+    process.exit(1)
+  }
+}
+
+main()

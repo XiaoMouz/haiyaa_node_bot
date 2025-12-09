@@ -4,15 +4,17 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "nodemon -e ts --exec 'clear && ts-node src/index.ts'",
-    "build": "tsc"
+    "dev": "bun --watch src/index.ts",
+    "build:windows": "bun build --compile --target bun-windows-x64 src/index.ts --outfile .output/haiyaa_node_bot_windows.exe"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.22.0",
   "dependencies": {
+    "dotenv": "^17.2.3",
     "node-napcat-ts": "^0.4.20",
+    "openai": "^6.10.0",
     "typescript": "^5.9.3",
     "unstorage": "^1.17.3"
   },

@@ -20,6 +20,6 @@
         "src/**/*"
     ],
     "exclude": [
-        "dist"
+        ".dist"
     ]
 }
