@@ -5,7 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
-    "build:windows": "bun build --compile --target bun-windows-x64 src/index.ts --outfile .output/haiyaa_node_bot_windows.exe"
+    "build:linux-x64": "bun build --compile --target bun-linux-x64 src/index.ts --outfile .output/haiyaa_node_bot_linux_x64",
+    "build:linux-arm64": "bun build --compile --target bun-linux-arm64 src/index.ts --outfile .output/haiyaa_node_bot_linux_arm64",
+    "build:macos-x64": "bun build --compile --target bun-darwin-x64 src/index.ts --outfile .output/haiyaa_node_bot_macos_x64",
+    "build:macos-arm64": "bun build --compile --target bun-darwin-arm64 src/index.ts --outfile .output/haiyaa_node_bot_macos_arm64",
+    "build:windows": "bun build --compile --target bun-windows-x64 src/index.ts --outfile .output/haiyaa_node_bot_windows_x64.exe",
+    "build:all": "bun run build:linux-x64 && bun run build:linux-arm64 && bun run build:macos-x64 && bun run build:macos-arm64 && bun run build:windows"
   },
   "keywords": [],
   "author": "",
