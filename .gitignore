@@ -1,0 +1,5 @@
+node_modules
+.nitro
+.nuxt
+.dev
+.dist
