@@ -7,21 +7,35 @@ export class LotteryService {
   private repository: JsonRepository<Lottery>
 
   constructor() {
-    this.repository = new JsonRepository<Lottery>(BotSettings.LotteryDataFilePath)
+    this.repository = new JsonRepository<Lottery>(
+      BotSettings.LotteryDataFilePath
+    )
   }
 
-  async hasDrawnToday(initiatorUin: number, groupUin: number): Promise<boolean> {
+  async hasDrawnToday(
+    initiatorUin: number,
+    groupUin: number
+  ): Promise<boolean> {
     const today = Tool.getCurrentDate()
     const existing = await this.repository.find(
-      (l) => l.initiatorUin === initiatorUin && l.groupUin === groupUin && l.date === today
+      (l) =>
+        l.initiatorUin === initiatorUin &&
+        l.groupUin === groupUin &&
+        l.date === today
     )
     return existing !== undefined
   }
 
-  async getTodayLottery(initiatorUin: number, groupUin: number): Promise<Lottery | undefined> {
+  async getTodayLottery(
+    initiatorUin: number,
+    groupUin: number
+  ): Promise<Lottery | undefined> {
     const today = Tool.getCurrentDate()
     return await this.repository.find(
-      (l) => l.initiatorUin === initiatorUin && l.groupUin === groupUin && l.date === today
+      (l) =>
+        l.initiatorUin === initiatorUin &&
+        l.groupUin === groupUin &&
+        l.date === today
     )
   }
 
@@ -60,7 +74,10 @@ export class LotteryService {
     // Save to repository
     await this.repository.appendOrReplace(
       newLottery,
-      (l) => l.initiatorUin === initiatorUin && l.groupUin === groupUin && l.date === Tool.getCurrentDate()
+      (l) =>
+        l.initiatorUin === initiatorUin &&
+        l.groupUin === groupUin &&
+        l.date === Tool.getCurrentDate()
     )
 
     return newLottery
@@ -74,7 +91,12 @@ export class LotteryService {
     const existing = await this.getTodayLottery(initiatorUin, groupUin)
 
     if (!existing) {
-      return { success: false, message: '你今天还没有抽过老婆呢！' }
+      return {
+        success: false,
+        message: `你今天还没有抽过老婆呢！可以输入【${BotSettings.WifeLotteryCommands.join(
+          ','
+        )} 】来抽取哦~`,
+      }
     }
 
     if (existing.remainingChances <= 0) {
@@ -105,7 +127,10 @@ export class LotteryService {
     // Save updated record
     await this.repository.appendOrReplace(
       updatedLottery,
-      (l) => l.initiatorUin === initiatorUin && l.groupUin === groupUin && l.date === Tool.getCurrentDate()
+      (l) =>
+        l.initiatorUin === initiatorUin &&
+        l.groupUin === groupUin &&
+        l.date === Tool.getCurrentDate()
     )
 
     return { success: true, lottery: updatedLottery }

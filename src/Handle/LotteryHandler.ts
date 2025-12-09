@@ -74,8 +74,8 @@ export class LotteryHandler implements IGroupMessageHandler {
     if (existingLottery) {
       // Already drawn, show existing result
       const avatarUrl = `https://q1.qlogo.cn/g?b=qq&nk=${existingLottery.selectedUin}&s=640`
-      const avatarBuffer = await Tool.fetchImageAsync(avatarUrl)
-      const base64Avatar = avatarBuffer.toString('base64')
+      // const avatarBuffer = await Tool.fetchImageAsync(avatarUrl)
+      // const base64Avatar = avatarBuffer.toString('base64')
 
       const remainingText =
         existingLottery.remainingChances > 0
@@ -95,7 +95,7 @@ export class LotteryHandler implements IGroupMessageHandler {
             }`
           ),
           Structs.text(remainingText),
-          Structs.image(`base64://${base64Avatar}`),
+          Structs.image(avatarUrl),
         ],
       })
       return
@@ -112,8 +112,8 @@ export class LotteryHandler implements IGroupMessageHandler {
 
     // Get avatar
     const avatarUrl = `https://q1.qlogo.cn/g?b=qq&nk=${lottery.selectedUin}&s=640`
-    const avatarBuffer = await Tool.fetchImageAsync(avatarUrl)
-    const base64Avatar = avatarBuffer.toString('base64')
+    // const avatarBuffer = await Tool.fetchImageAsync(avatarUrl)
+    // const base64Avatar = avatarBuffer.toString('base64')
 
     const remainingText =
       lottery.remainingChances > 0
@@ -134,7 +134,7 @@ export class LotteryHandler implements IGroupMessageHandler {
         ),
 
         Structs.text(remainingText),
-        Structs.image(`base64://${base64Avatar}`),
+        Structs.image(avatarUrl),
       ],
     })
 
@@ -184,8 +184,8 @@ export class LotteryHandler implements IGroupMessageHandler {
     const avatarUrl = `https://q1.qlogo.cn/g?b=qq&nk=${
       result.lottery!.selectedUin
     }&s=640`
-    const avatarBuffer = await Tool.fetchImageAsync(avatarUrl)
-    const base64Avatar = avatarBuffer.toString('base64')
+    // const avatarBuffer = await Tool.fetchImageAsync(avatarUrl)
+    // const base64Avatar = avatarBuffer.toString('base64')
 
     const remainingText =
       result.lottery!.remainingChances > 0
@@ -206,7 +206,7 @@ export class LotteryHandler implements IGroupMessageHandler {
           }`
         ),
         Structs.text(remainingText),
-        Structs.image(`base64://${base64Avatar}`),
+        Structs.image(avatarUrl),
       ],
     })
 
