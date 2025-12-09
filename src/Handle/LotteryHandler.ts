@@ -55,6 +55,22 @@ export class LotteryHandler implements IGroupMessageHandler {
       context.groupUin
     )
 
+    // Get group member list
+    const memberListResponse = await context.bot.get_group_member_list({
+      group_id: context.groupUin,
+    })
+
+    if (!memberListResponse || !Array.isArray(memberListResponse)) {
+      await context.bot.send_group_msg({
+        group_id: context.groupUin,
+        message: [
+          Structs.reply(context.messageId),
+          Structs.text('获取群成员列表失败，请稍后再试~'),
+        ],
+      })
+      return
+    }
+
     if (existingLottery) {
       // Already drawn, show existing result
       const avatarUrl = `https://q1.qlogo.cn/g?b=qq&nk=${existingLottery.selectedUin}&s=640`
@@ -71,25 +87,15 @@ export class LotteryHandler implements IGroupMessageHandler {
         message: [
           Structs.reply(context.messageId),
           Structs.text(`你今天已经抽过了！你的老婆是：`),
-          Structs.text(`@${existingLottery.selectedUin}`),
+          Structs.text(
+            `${
+              memberListResponse.find(
+                (m) => m.user_id === existingLottery.selectedUin
+              )?.nickname || existingLottery.selectedUin
+            }`
+          ),
           Structs.text(remainingText),
           Structs.image(`base64://${base64Avatar}`),
-        ],
-      })
-      return
-    }
-
-    // Get group member list
-    const memberListResponse = await context.bot.get_group_member_list({
-      group_id: context.groupUin,
-    })
-
-    if (!memberListResponse || !Array.isArray(memberListResponse)) {
-      await context.bot.send_group_msg({
-        group_id: context.groupUin,
-        message: [
-          Structs.reply(context.messageId),
-          Structs.text('获取群成员列表失败，请稍后再试~'),
         ],
       })
       return
