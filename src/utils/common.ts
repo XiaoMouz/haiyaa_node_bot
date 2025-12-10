@@ -4,11 +4,15 @@
  */
 
 /**
- * 获取当前日期 YYYY-MM-DD
+ * 获取当前日期 YYYY-MM-DD（本地时间）
+ * 确保在本地时间 0 点重置，而不是 UTC 时间
  */
 export function getCurrentDate(): string {
   const now = new Date()
-  return now.toISOString().split('T')[0]
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
 
 /**
