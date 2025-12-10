@@ -1,6 +1,6 @@
 import { defineCommand } from '../types'
 import { useLottery } from '../composables'
-import { reply } from '../utils'
+import { getAvatarUrl, reply, sendImage } from '../utils'
 
 /**
  * Lottery Command - 抽老婆命令
@@ -30,12 +30,14 @@ export default defineCommand({
       const existing = await getTodayLottery(ctx.sender.id, ctx.group.id)
 
       if (existing) {
-        await reply(
+        await sendImage(
           ctx,
-          `你今天已经抽过老婆了哦！是 [${
+          getAvatarUrl(existing.selectedUin),
+          `你今天已经抽过了哦！是 [${
             groupMembers.find((m) => m.user_id === existing.selectedUin)
               ?.nickname
-          }]\n剩余重抽次数：${existing.remainingChances}`
+          }]\n剩余重抽次数：${existing.remainingChances}`,
+          true
         )
         return
       }
@@ -43,11 +45,13 @@ export default defineCommand({
       // 抽取
       const lottery = await draw(ctx.sender.id, ctx.group.id, memberIds)
 
-      await reply(
+      await sendImage(
         ctx,
-        `恭喜你抽到了今日老婆：[${
+        getAvatarUrl(lottery.selectedUin),
+        `恭喜你抽到了：[${
           groupMembers.find((m) => m.user_id === lottery.selectedUin)?.nickname
-        }]\n剩余重抽次数：${lottery.remainingChances}`
+        }]\n剩余重抽次数：${lottery.remainingChances}`,
+        true
       )
 
       console.log(`[Lottery] ${ctx.sender.id} drew ${lottery.selectedUin}`)

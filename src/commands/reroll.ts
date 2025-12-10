@@ -1,6 +1,6 @@
 import { defineCommand } from '../types'
 import { useLottery } from '../composables'
-import { reply } from '../utils'
+import { getAvatarUrl, reply, sendImage } from '../utils'
 
 /**
  * Reroll Command - 重抽老婆命令
@@ -29,19 +29,34 @@ export default defineCommand({
       // 重抽
       const result = await redraw(ctx.sender.id, ctx.group.id, memberIds)
 
-      if (!result) {
-        await reply(ctx, '不能重抽了')
+      if (!result.success) {
+        await sendImage(
+          ctx,
+          getAvatarUrl(result.lottery.selectedUin),
+          `不能重抽了${
+            result.failReason ? `，因为${result.failReason}` : ''
+          }，你的老婆是${
+            groupMembers.find((m) => m.user_id === result.lottery.selectedUin)
+              ?.nickname
+          }`,
+          true
+        )
         return
       }
 
-      await reply(
+      await sendImage(
         ctx,
-        `重新抽取成功！你的新老婆是：[${
-          groupMembers.find((m) => m.user_id === result.selectedUin)?.nickname
-        }]\n剩余重抽次数：${result.remainingChances}`
+        getAvatarUrl(result.lottery.selectedUin),
+        `你重抽到了：[${
+          groupMembers.find((m) => m.user_id === result.lottery.selectedUin)
+            ?.nickname
+        }]\n剩余重抽次数：${result.lottery.remainingChances}`,
+        true
       )
 
-      console.log(`[Lottery] ${ctx.sender.id} redrew to ${result.selectedUin}`)
+      console.log(
+        `[Lottery] ${ctx.sender.id} redrew to ${result.lottery.selectedUin}`
+      )
     } catch (error: any) {
       console.error('[Lottery] Reroll error:', error)
       if (error.message === 'No lottery record found') {

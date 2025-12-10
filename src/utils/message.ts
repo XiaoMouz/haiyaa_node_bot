@@ -15,7 +15,9 @@ export async function sendText(ctx: BotContext, text: string, reply = true) {
   }
 
   // 群消息
-  const message = reply ? [Structs.reply(ctx.message.id), Structs.text(text)] : [Structs.text(text)]
+  const message = reply
+    ? [Structs.reply(ctx.message.id), Structs.text(text)]
+    : [Structs.text(text)]
 
   return ctx.bot.send_group_msg({
     group_id: ctx.group.id,
@@ -32,10 +34,10 @@ export async function sendImage(
   text?: string,
   reply = true
 ) {
-  const imageBuffer = await fs.readFile(imagePath)
-  const base64Image = imageBuffer.toString('base64')
+  // const imageBuffer = await fs.readFile(imagePath)
+  // const base64Image = imageBuffer.toString('base64')
 
-  const imageSegment = Structs.image(`base64://${base64Image}`)
+  const imageSegment = Structs.image(imagePath)
 
   if (!ctx.group) {
     // 私聊
@@ -61,10 +63,17 @@ export async function sendImage(
 /**
  * 发送 @ 消息
  */
-export async function sendAt(ctx: BotContext, text: string, userId: number | 'all') {
+export async function sendAt(
+  ctx: BotContext,
+  text: string,
+  userId: number | 'all'
+) {
   if (!ctx.group) return
 
-  const message = [Structs.at(userId === 'all' ? 'all' : userId), Structs.text(` ${text}`)]
+  const message = [
+    Structs.at(userId === 'all' ? 'all' : userId),
+    Structs.text(` ${text}`),
+  ]
 
   return ctx.bot.send_group_msg({
     group_id: ctx.group.id,

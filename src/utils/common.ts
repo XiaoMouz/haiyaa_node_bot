@@ -74,3 +74,12 @@ export function safeJsonParse<T>(json: string, fallback: T): T {
 export function isToday(dateStr: string): boolean {
   return dateStr === getCurrentDate()
 }
+
+/**
+ * 获取头像 url
+ * @param userId qq
+ * @returns url
+ */
+export function getAvatarUrl(userId: number): string {
+  return `https://q1.qlogo.cn/g?b=qq&nk=${userId}&s=640`
+}

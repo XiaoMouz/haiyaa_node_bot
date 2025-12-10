@@ -53,7 +53,7 @@ export class BotApp {
    * 注册多个命令
    */
   commands(commands: CommandDefinition[]) {
-    this.commandList.forEach((cmd) => this.command(cmd))
+    commands.forEach((cmd) => this.command(cmd))
     return this
   }
 

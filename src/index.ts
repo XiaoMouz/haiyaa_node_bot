@@ -53,7 +53,6 @@ async function main() {
 
     // Register commands (类似注册 API routes)
     app.commands([fortuneCommand, lotteryCommand, rerollCommand])
-
     // Register plugins (插件会在初始化时执行)
     app.plugin(fortuneInitPlugin)
     app.plugin(liveMonitorPlugin)

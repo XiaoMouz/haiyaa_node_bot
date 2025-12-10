@@ -19,17 +19,25 @@ export function useLottery() {
   /**
    * 获取今日抽签记录
    */
-  async function getTodayLottery(uin: number, groupUin: number): Promise<Lottery | undefined> {
+  async function getTodayLottery(
+    uin: number,
+    groupUin: number
+  ): Promise<Lottery | undefined> {
     const today = getCurrentDate()
     return storage.find(
-      (l) => l.initiatorUin === uin && l.groupUin === groupUin && l.date === today
+      (l) =>
+        l.initiatorUin === uin && l.groupUin === groupUin && l.date === today
     )
   }
 
   /**
    * 抽老婆
    */
-  async function draw(uin: number, groupUin: number, groupMembers: number[]): Promise<Lottery> {
+  async function draw(
+    uin: number,
+    groupUin: number,
+    groupMembers: number[]
+  ): Promise<Lottery> {
     // 检查是否已抽过
     const existing = await getTodayLottery(uin, groupUin)
     if (existing) {
@@ -65,14 +73,21 @@ export function useLottery() {
     uin: number,
     groupUin: number,
     groupMembers: number[]
-  ): Promise<Lottery | null> {
+  ): Promise<{
+    success: boolean
+    lottery: Lottery
+    failReason?: string
+  }> {
     const existing = await getTodayLottery(uin, groupUin)
     if (!existing) {
       throw new Error('No lottery record found')
     }
 
     if (existing.remainingChances <= 0) {
-      return null
+      return {
+        success: false,
+        lottery: existing,
+      }
     }
 
     // 过滤掉已抽过的和自己
@@ -81,7 +96,11 @@ export function useLottery() {
     )
 
     if (candidates.length === 0) {
-      return null
+      return {
+        success: false,
+        lottery: existing,
+        failReason: '没有更多群友可以给你抽了',
+      }
     }
 
     // 随机选择
@@ -94,13 +113,20 @@ export function useLottery() {
       remainingChances: existing.remainingChances - 1,
       drawnUins: [...existing.drawnUins, selected],
     }
+    console.log('Updated lottery:', updated)
 
     await storage.upsert(
       updated,
-      (l) => l.initiatorUin === uin && l.groupUin === groupUin && l.date === getCurrentDate()
+      (l) =>
+        l.initiatorUin === uin &&
+        l.groupUin === groupUin &&
+        l.date === getCurrentDate()
     )
 
-    return updated
+    return {
+      success: true,
+      lottery: updated,
+    }
   }
 
   return {
