@@ -1,5 +1,5 @@
 import { defineCommand } from '../types'
-import { useLottery } from '../composables'
+import { useLottery, useGroupMembers } from '../composables'
 import { getAvatarUrl, reply, sendImage } from '../utils'
 
 /**
@@ -13,44 +13,42 @@ export default defineCommand({
 
   async handler(ctx) {
     const { redraw } = useLottery()
+    const { getGroupMembers, getGroupMemberIds } = useGroupMembers()
 
     try {
       if (!ctx.group) {
         return
       }
 
-      // 获取群成员列表
-      const groupMembers = await ctx.bot.get_group_member_list({
-        group_id: ctx.group.id,
-      })
-
-      const memberIds = groupMembers.map((m) => m.user_id)
+      // 从缓存获取群成员列表
+      const groupMembers = await getGroupMembers(ctx.group.id)
+      const memberIds = await getGroupMemberIds(ctx.group.id)
 
       // 重抽
       const result = await redraw(ctx.sender.id, ctx.group.id, memberIds)
 
       if (!result.success) {
+        const selectedMember = groupMembers.find(
+          (m) => m.user_id === result.lottery.selectedUin
+        )
         await sendImage(
           ctx,
           getAvatarUrl(result.lottery.selectedUin),
           `不能重抽了${
             result.failReason ? `，因为${result.failReason}` : ''
-          }，你的老婆是${
-            groupMembers.find((m) => m.user_id === result.lottery.selectedUin)
-              ?.nickname
-          }`,
+          }，你的老婆是${selectedMember?.nickname || selectedMember?.card || result.lottery.selectedUin}`,
           true
         )
         return
       }
 
+      const selectedMember = groupMembers.find(
+        (m) => m.user_id === result.lottery.selectedUin
+      )
       await sendImage(
         ctx,
         getAvatarUrl(result.lottery.selectedUin),
-        `你重抽到了：[${
-          groupMembers.find((m) => m.user_id === result.lottery.selectedUin)
-            ?.nickname
-        }]\n剩余重抽次数：${result.lottery.remainingChances}`,
+        `你重抽到了：[${selectedMember?.nickname || selectedMember?.card || result.lottery.selectedUin}]\n剩余重抽次数：${result.lottery.remainingChances}`,
         true
       )
 

@@ -6,6 +6,7 @@ import type {
   Plugin,
 } from '../types'
 import { createContext } from '../types'
+import { useGroupMembers } from '../composables'
 
 /**
  * BotApp - 核心应用类（类似 Nuxt App / H3 App）
@@ -248,8 +249,42 @@ export class BotApp {
     })
 
     // 生命周期事件
-    this.bot.on('meta_event.lifecycle.connect', () => {
+    this.bot.on('meta_event.lifecycle.connect', async () => {
       console.log('[App] Bot online!')
+
+      // 初始化群成员缓存
+      const groupMembers = useGroupMembers()
+      console.log('[App] Initializing group members cache...')
+
+      try {
+        await groupMembers.initAllGroups()
+
+        // 输出统计信息
+        const stats = await groupMembers.getStats()
+        console.log(
+          `[App] Group members cache initialized: ${stats.totalGroups} groups, ${stats.totalMembers} total members`
+        )
+      } catch (error) {
+        console.error('[App] Failed to initialize group members cache:', error)
+      }
+    })
+
+    // 群成员增加事件
+    this.bot.on('notice.group_increase', async (raw) => {
+      const groupMembers = useGroupMembers()
+      console.log(
+        `[App] Group member increase: user ${raw.user_id} joined group ${raw.group_id}`
+      )
+      await groupMembers.addGroupMember(raw.group_id, raw.user_id)
+    })
+
+    // 群成员减少事件
+    this.bot.on('notice.group_decrease', async (raw) => {
+      const groupMembers = useGroupMembers()
+      console.log(
+        `[App] Group member decrease: user ${raw.user_id} left group ${raw.group_id}`
+      )
+      await groupMembers.removeGroupMember(raw.group_id, raw.user_id)
     })
   }
 }

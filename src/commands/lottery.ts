@@ -1,5 +1,5 @@
 import { defineCommand } from '../types'
-import { useLottery } from '../composables'
+import { useLottery, useGroupMembers } from '../composables'
 import { getAvatarUrl, reply, sendImage } from '../utils'
 
 /**
@@ -13,30 +13,28 @@ export default defineCommand({
 
   async handler(ctx) {
     const { getTodayLottery, draw } = useLottery()
+    const { getGroupMembers, getGroupMemberIds } = useGroupMembers()
 
     try {
       if (!ctx.group) {
         return
       }
 
-      // 获取群成员列表
-      const groupMembers = await ctx.bot.get_group_member_list({
-        group_id: ctx.group.id,
-      })
-
-      const memberIds = groupMembers.map((m) => m.user_id)
+      // 从缓存获取群成员列表
+      const groupMembers = await getGroupMembers(ctx.group.id)
+      const memberIds = await getGroupMemberIds(ctx.group.id)
 
       // 检查今日是否已抽过
       const existing = await getTodayLottery(ctx.sender.id, ctx.group.id)
 
       if (existing) {
+        const selectedMember = groupMembers.find(
+          (m) => m.user_id === existing.selectedUin
+        )
         await sendImage(
           ctx,
           getAvatarUrl(existing.selectedUin),
-          `你今天已经抽过了哦！是 [${
-            groupMembers.find((m) => m.user_id === existing.selectedUin)
-              ?.nickname
-          }]\n剩余重抽次数：${existing.remainingChances}`,
+          `你今天已经抽过了哦！是 [${selectedMember?.nickname || selectedMember?.card || existing.selectedUin}]\n剩余重抽次数：${existing.remainingChances}`,
           true
         )
         return
@@ -45,12 +43,13 @@ export default defineCommand({
       // 抽取
       const lottery = await draw(ctx.sender.id, ctx.group.id, memberIds)
 
+      const selectedMember = groupMembers.find(
+        (m) => m.user_id === lottery.selectedUin
+      )
       await sendImage(
         ctx,
         getAvatarUrl(lottery.selectedUin),
-        `恭喜你抽到了：[${
-          groupMembers.find((m) => m.user_id === lottery.selectedUin)?.nickname
-        }]\n剩余重抽次数：${lottery.remainingChances}`,
+        `恭喜你抽到了：[${selectedMember?.nickname || selectedMember?.card || lottery.selectedUin}]\n剩余重抽次数：${lottery.remainingChances}`,
         true
       )
 

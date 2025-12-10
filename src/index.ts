@@ -14,6 +14,7 @@ import loggerMiddleware from './middleware/logger'
 // Import plugins
 import fortuneInitPlugin from './plugins/fortune-init'
 import liveMonitorPlugin from './plugins/live-monitor'
+import groupMembersInitPlugin from './plugins/group-members-init'
 
 /**
  * Main entry point
@@ -54,6 +55,7 @@ async function main() {
     // Register commands (类似注册 API routes)
     app.commands([fortuneCommand, lotteryCommand, rerollCommand])
     // Register plugins (插件会在初始化时执行)
+    app.plugin(groupMembersInitPlugin)
     app.plugin(fortuneInitPlugin)
     app.plugin(liveMonitorPlugin)
 
