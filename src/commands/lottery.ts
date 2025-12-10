@@ -12,6 +12,8 @@ export default defineCommand({
   match: ['抽老婆', '今日老婆', 'lp'],
 
   async handler(ctx) {
+    const startTime = performance.now() // 开始计时
+
     const { getTodayLottery, draw } = useLottery()
     const { getGroupMembers, getGroupMemberIds } = useGroupMembers()
 
@@ -37,6 +39,11 @@ export default defineCommand({
           `你今天已经抽过了哦！是 [${selectedMember?.nickname || selectedMember?.card || existing.selectedUin}]\n剩余重抽次数：${existing.remainingChances}`,
           true
         )
+
+        const duration = performance.now() - startTime
+        console.log(
+          `[Lottery] ${ctx.sender.id} already drew today (${duration.toFixed(2)}ms)`
+        )
         return
       }
 
@@ -53,10 +60,14 @@ export default defineCommand({
         true
       )
 
-      console.log(`[Lottery] ${ctx.sender.id} drew ${lottery.selectedUin}`)
+      const duration = performance.now() - startTime
+      console.log(
+        `[Lottery] ${ctx.sender.id} drew ${lottery.selectedUin} (${duration.toFixed(2)}ms)`
+      )
     } catch (error) {
+      const duration = performance.now() - startTime
       console.error(
-        `[Lottery] Error (sender ${ctx.sender.nickname} | ${ctx.sender.id}):`,
+        `[Lottery] Error (sender ${ctx.sender.nickname} | ${ctx.sender.id}) (${duration.toFixed(2)}ms):`,
         error
       )
       await reply(ctx, '抽老婆时出错了，请稍后再试~')

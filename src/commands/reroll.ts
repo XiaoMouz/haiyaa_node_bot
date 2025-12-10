@@ -12,6 +12,8 @@ export default defineCommand({
   match: ['再抽一次', 'clp'],
 
   async handler(ctx) {
+    const startTime = performance.now() // 开始计时
+
     const { redraw } = useLottery()
     const { getGroupMembers, getGroupMemberIds } = useGroupMembers()
 
@@ -39,6 +41,11 @@ export default defineCommand({
           }，你的老婆是${selectedMember?.nickname || selectedMember?.card || result.lottery.selectedUin}`,
           true
         )
+
+        const duration = performance.now() - startTime
+        console.log(
+          `[Lottery] ${ctx.sender.id} cannot redraw: ${result.failReason || 'no chances'} (${duration.toFixed(2)}ms)`
+        )
         return
       }
 
@@ -52,12 +59,14 @@ export default defineCommand({
         true
       )
 
+      const duration = performance.now() - startTime
       console.log(
-        `[Lottery] ${ctx.sender.id} redrew to ${result.lottery.selectedUin}`
+        `[Lottery] ${ctx.sender.id} redrew to ${result.lottery.selectedUin} (${duration.toFixed(2)}ms)`
       )
     } catch (error: any) {
+      const duration = performance.now() - startTime
       console.error(
-        `[Lottery] Reroll error: (sender ${ctx.sender.nickname} | ${ctx.sender.id}):`,
+        `[Lottery] Reroll error: (sender ${ctx.sender.nickname} | ${ctx.sender.id}) (${duration.toFixed(2)}ms):`,
         error
       )
       if (error.message === 'No lottery record found') {
