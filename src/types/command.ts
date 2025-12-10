@@ -8,7 +8,9 @@ export type CommandHandler = (ctx: BotContext) => Promise<void> | void
 /**
  * Command Matcher - 判断是否匹配命令
  */
-export type CommandMatcher = (message: string) => boolean | { params?: Record<string, any> }
+export type CommandMatcher = (
+  message: string
+) => boolean | { params?: Record<string, unknown> }
 
 /**
  * Command Definition - 命令定义
@@ -30,7 +32,9 @@ export interface CommandDefinition {
 /**
  * 定义命令的辅助函数 - 类似 defineEventHandler
  */
-export function defineCommand(definition: CommandDefinition): CommandDefinition {
+export function defineCommand(
+  definition: CommandDefinition
+): CommandDefinition {
   return definition
 }
 

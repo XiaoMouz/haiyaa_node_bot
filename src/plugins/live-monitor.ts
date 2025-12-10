@@ -1,5 +1,5 @@
 import { definePlugin } from '../types'
-import { Structs } from 'node-napcat-ts'
+import { SendMessageSegment, Structs } from 'node-napcat-ts'
 import { fetchImage, sleep } from '../utils'
 import { BilibiliRoomInfoResponse } from '../clients/Model/BilibiliRoomInfo'
 
@@ -61,7 +61,7 @@ export default definePlugin(async ({ app }) => {
   /**
    * 通知开播
    */
-  async function notifyLiveStart(roomData: any) {
+  async function notifyLiveStart(roomData: BilibiliRoomInfoResponse['data']) {
     try {
       console.log(`[LiveMonitor] Room ${ROOM_ID} went live!`)
 
@@ -78,7 +78,7 @@ export default definePlugin(async ({ app }) => {
       }
 
       const messageText = `【直播通知】\n${title}\n房间号：${ROOM_ID}\n快来看吧！`
-      const message: any[] = []
+      const message: SendMessageSegment[] = []
 
       // @全体成员
       try {

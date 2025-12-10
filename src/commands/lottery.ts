@@ -24,7 +24,7 @@ export default defineCommand({
         group_id: ctx.group.id,
       })
 
-      const memberIds = groupMembers.data.map((m: any) => m.user_id)
+      const memberIds = groupMembers.map((m) => m.user_id)
 
       // 检查今日是否已抽过
       const existing = await getTodayLottery(ctx.sender.id, ctx.group.id)

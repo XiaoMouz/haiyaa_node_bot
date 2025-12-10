@@ -35,7 +35,7 @@ export type BilibiliRoomData = {
   hot_words: string[]
   hot_words_status: number
   verify: string
-  new_pendants: any
+  new_pendants: unknown
   up_session: string
   pk_status: number
   pk_id: number

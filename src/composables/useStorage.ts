@@ -5,7 +5,7 @@ import path from 'path'
  * useStorage - 类似 Nuxt useStorage 的 composable
  * 提供简单的 JSON 文件存储功能
  */
-export function useStorage<T = any>(filePath: string) {
+export function useStorage<T>(filePath: string) {
   /**
    * 加载数据
    */
@@ -17,7 +17,7 @@ export function useStorage<T = any>(filePath: string) {
       const data = await fs.readFile(filePath, 'utf-8')
       return JSON.parse(data) as T[]
     } catch (error: any) {
-      if (error.code === 'ENOENT') {
+      if (error?.code === 'ENOENT') {
         return []
       }
       throw error
@@ -61,7 +61,10 @@ export function useStorage<T = any>(filePath: string) {
   /**
    * 更新或追加
    */
-  async function upsert(item: T, predicate: (existing: T) => boolean): Promise<void> {
+  async function upsert(
+    item: T,
+    predicate: (existing: T) => boolean
+  ): Promise<void> {
     const data = await load()
     const index = data.findIndex(predicate)
 

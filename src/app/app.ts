@@ -53,7 +53,7 @@ export class BotApp {
    * 注册多个命令
    */
   commands(commands: CommandDefinition[]) {
-    commandList.forEach((cmd) => this.command(cmd))
+    this.commandList.forEach((cmd) => this.command(cmd))
     return this
   }
 
@@ -83,9 +83,9 @@ export class BotApp {
   /**
    * 处理消息 - 核心处理逻辑
    */
-  async handleMessage(rawContext: {
+  async handleMessage<T>(rawContext: {
     bot: NCWebsocket
-    message: { id: number; text: string; raw: any }
+    message: { id: number; text: string; raw: T }
     sender: { id: number; nickname: string }
     group?: { id: number }
   }) {
@@ -211,7 +211,7 @@ export class BotApp {
     // 群消息
     this.bot.on('message.group.normal', async (raw) => {
       const messageText = raw.message
-        .map((m: any) =>
+        .map((m) =>
           'text' in m.data && m.data.text ? m.data.text.toString() : ''
         )
         .join('')
@@ -230,7 +230,7 @@ export class BotApp {
     // 私聊消息
     this.bot.on('message.private.friend', async (raw) => {
       const messageText = raw.message
-        .map((m: any) =>
+        .map((m) =>
           'text' in m.data && m.data.text ? m.data.text.toString() : ''
         )
         .join('')

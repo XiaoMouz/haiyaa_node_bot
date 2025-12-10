@@ -24,7 +24,7 @@ export default defineCommand({
         group_id: ctx.group.id,
       })
 
-      const memberIds = groupMembers.data.map((m: any) => m.user_id)
+      const memberIds = groupMembers.map((m) => m.user_id)
 
       // 重抽
       const result = await redraw(ctx.sender.id, ctx.group.id, memberIds)
