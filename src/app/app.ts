@@ -171,6 +171,10 @@ export class BotApp {
           const command = this.commandList.find(
             (c) => c.name === ctx.matched!.command
           )
+          console.log(
+            `[Execute] Matched command by sender [${ctx.sender.nickname}|${ctx.sender.id}]: ${ctx.matched.command}`,
+            `,params: ${JSON.stringify(ctx.matched.params)}`
+          )
           if (command) {
             await command.handler(ctx)
           }

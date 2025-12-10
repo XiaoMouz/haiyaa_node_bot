@@ -34,10 +34,20 @@ export async function sendImage(
   text?: string,
   reply = true
 ) {
-  // const imageBuffer = await fs.readFile(imagePath)
-  // const base64Image = imageBuffer.toString('base64')
+  let imageSegment
 
-  const imageSegment = Structs.image(imagePath)
+  if (
+    imagePath.startsWith('http://') ||
+    imagePath.startsWith('https://') ||
+    imagePath.startsWith('base64')
+  ) {
+    // 网络图片或 base64 图片
+    imageSegment = Structs.image(imagePath)
+  } else {
+    const imageBuffer = await fs.readFile(imagePath)
+    const base64Image = imageBuffer.toString('base64')
+    imageSegment = Structs.image(`base64://${base64Image}`)
+  }
 
   if (!ctx.group) {
     // 私聊

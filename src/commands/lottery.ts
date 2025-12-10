@@ -56,7 +56,10 @@ export default defineCommand({
 
       console.log(`[Lottery] ${ctx.sender.id} drew ${lottery.selectedUin}`)
     } catch (error) {
-      console.error('[Lottery] Error:', error)
+      console.error(
+        `[Lottery] Error (sender ${ctx.sender.nickname} | ${ctx.sender.id}):`,
+        error
+      )
       await reply(ctx, '抽老婆时出错了，请稍后再试~')
     }
   },

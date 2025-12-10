@@ -113,7 +113,6 @@ export function useLottery() {
       remainingChances: existing.remainingChances - 1,
       drawnUins: [...existing.drawnUins, selected],
     }
-    console.log('Updated lottery:', updated)
 
     await storage.upsert(
       updated,

@@ -58,7 +58,10 @@ export default defineCommand({
         `[Lottery] ${ctx.sender.id} redrew to ${result.lottery.selectedUin}`
       )
     } catch (error: any) {
-      console.error('[Lottery] Reroll error:', error)
+      console.error(
+        `[Lottery] Reroll error: (sender ${ctx.sender.nickname} | ${ctx.sender.id}):`,
+        error
+      )
       if (error.message === 'No lottery record found') {
         await reply(ctx, '你今天还没有抽过老婆哦，请先使用"抽老婆"命令')
       } else {

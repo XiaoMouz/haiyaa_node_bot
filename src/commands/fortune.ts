@@ -57,7 +57,10 @@ export default defineCommand({
         `[Fortune] ${ctx.sender.id} drew ${fortune.fortuneType} (new: ${isNewDraw})`
       )
     } catch (error) {
-      console.error('[Fortune] Error:', error)
+      console.error(
+        `[Fortune] Error (sender ${ctx.sender.nickname} | ${ctx.sender.id}):`,
+        error
+      )
       const { reply } = await import('../utils')
       await reply(ctx, '抽运势时出错了，请稍后再试~')
     }
