@@ -38,7 +38,7 @@ async function main() {
           delay: 5000,
         },
       },
-      process.env.NODE_ENV === 'development'
+      false
     )
 
     // Create app
