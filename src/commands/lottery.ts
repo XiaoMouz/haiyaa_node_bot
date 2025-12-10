@@ -32,7 +32,10 @@ export default defineCommand({
       if (existing) {
         await reply(
           ctx,
-          `你今天已经抽过老婆了哦！是 [${existing.selectedUin}]\n剩余重抽次数：${existing.remainingChances}`
+          `你今天已经抽过老婆了哦！是 [${
+            groupMembers.find((m) => m.user_id === existing.selectedUin)
+              ?.nickname
+          }]\n剩余重抽次数：${existing.remainingChances}`
         )
         return
       }
@@ -42,7 +45,9 @@ export default defineCommand({
 
       await reply(
         ctx,
-        `恭喜你抽到了今日老婆：[${lottery.selectedUin}]\n剩余重抽次数：${lottery.remainingChances}`
+        `恭喜你抽到了今日老婆：[${
+          groupMembers.find((m) => m.user_id === lottery.selectedUin)?.nickname
+        }]\n剩余重抽次数：${lottery.remainingChances}`
       )
 
       console.log(`[Lottery] ${ctx.sender.id} drew ${lottery.selectedUin}`)

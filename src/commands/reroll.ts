@@ -30,13 +30,15 @@ export default defineCommand({
       const result = await redraw(ctx.sender.id, ctx.group.id, memberIds)
 
       if (!result) {
-        await reply(ctx, '没有剩余重抽次数了，或者没有更多候选人了')
+        await reply(ctx, '不能重抽了')
         return
       }
 
       await reply(
         ctx,
-        `重新抽取成功！你的新老婆是：[${result.selectedUin}]\n剩余重抽次数：${result.remainingChances}`
+        `重新抽取成功！你的新老婆是：[${
+          groupMembers.find((m) => m.user_id === result.selectedUin)?.nickname
+        }]\n剩余重抽次数：${result.remainingChances}`
       )
 
       console.log(`[Lottery] ${ctx.sender.id} redrew to ${result.selectedUin}`)
