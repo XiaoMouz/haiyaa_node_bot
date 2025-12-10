@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
     "build:linux-x64": "bun build --compile --target bun-linux-x64 src/index.ts --outfile .output/haiyaa_node_bot_linux_x64",
     "build:linux-arm64": "bun build --compile --target bun-linux-arm64 src/index.ts --outfile .output/haiyaa_node_bot_linux_arm64",
     "build:macos-x64": "bun build --compile --target bun-darwin-x64 src/index.ts --outfile .output/haiyaa_node_bot_macos_x64",

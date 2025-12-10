@@ -1,11 +1,11 @@
-export interface BilibiliRoomInfoResponse {
+export type BilibiliRoomInfoResponse = {
   code: number
   msg: string
   message: string
   data: BilibiliRoomData
 }
 
-export interface BilibiliRoomData {
+export type BilibiliRoomData = {
   uid: number
   room_id: number
   short_id: number

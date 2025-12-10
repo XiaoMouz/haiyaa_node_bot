@@ -1,5 +1,10 @@
 import { BilibiliRoomInfoResponse } from './Model/BilibiliRoomInfo.js'
 
+/**
+ * @deprecated
+ * Bilibili Client - 用于与Bilibili直播API交互
+ * OOP 设计时使用的客户端封装
+ */
 export class BilibiliClient {
   private static readonly API_BASE_URL = 'https://api.live.bilibili.com'
 
@@ -12,7 +17,7 @@ export class BilibiliClient {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const data = await response.json() as BilibiliRoomInfoResponse
+      const data = (await response.json()) as BilibiliRoomInfoResponse
 
       if (data.code !== 0) {
         throw new Error(`Bilibili API error: ${data.message || data.msg}`)

@@ -7,3 +7,5 @@ node_modules
 .claude
 .output
 Data/
+*.md
+!ARCHITECTURE.md
